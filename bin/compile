@@ -50,6 +50,8 @@ export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
 echo "----- dotnet -----"
 dotnet
 echo "------------------"
+dotnet --info
+echo "------------------"
 
 DEPLOYMENT_FILE_LOCATION=${SRC_DIR}/.deployment
 
