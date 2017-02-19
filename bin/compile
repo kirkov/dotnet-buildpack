@@ -47,6 +47,10 @@ ln -s ${BUILD_DIR}/dotnet /app
 export PATH="/app/dotnet:${PATH}"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
 
+echo "----- dotnet -----"
+dotnet
+echo "------------------"
+
 DEPLOYMENT_FILE_LOCATION=${SRC_DIR}/.deployment
 
 if [ -n "$PROJECT" ]; then
