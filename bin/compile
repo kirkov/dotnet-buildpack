@@ -47,6 +47,8 @@ ln -s ${BUILD_DIR}/dotnet /app
 export PATH="/app/dotnet:${PATH}"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
 
+DEPLOYMENT_FILE_LOCATION=${SRC_DIR}/.deployment
+
 if [ -n "$PROJECT" ]; then
 	PROJECT_JSON_FILE=${SRC_DIR}/${PROJECT}
 	echo "Project file configured in PROJECT environment variable"
