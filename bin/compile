@@ -73,7 +73,7 @@ PROJECT_DIR_NAME=$(basename $PROJECT_DIR)
 PROJECT_NAME=$(ruby -rjson -e "j = JSON.parse(File.open('${PROJECT_DIR}/project.json','r:bom|utf-8').read); unless j['buildOptions'].nil? ; puts j['buildOptions']['outputName'];end")
 echo "${PROJECT_NAME:=$PROJECT_DIR_NAME}"
 
-echo "Restoring the packages"
+echo "Restoring the packages: ${SRC_DIR}"
 dotnet restore ${SRC_DIR}
 
 # configure some npm command during building
