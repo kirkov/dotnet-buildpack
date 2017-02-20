@@ -62,11 +62,12 @@ dotnet restore ${PROJECT_PATH}
 # configure some npm command during building
 # export PATH="${PROJECT_DIR}/node_modules/.bin:${PATH}"
 
-echo "Publishing the app"
+BUILD_OUTPUT_PATH="${BUILD_DIR}/${CORE_BUILD_OUTPUT}"
+echo ">>> Publishing the app to: ${BUILD_OUTPUT_PATH}"
 # --output ${CORE_BUILD_OUTPUT}
-dotnet publish ${PROJECT_PATH} --configuration ${CORE_CONFIGURATION}
+dotnet publish ${PROJECT_PATH} --output ${BUILD_OUTPUT_PATH} --configuration ${CORE_CONFIGURATION}
 
-echo "Publish Successed"
+echo ">>> Publish Successed"
 
 # mkdir -p ${BUILD_DIR}/.profile.d
 # cp -n ${BUILDPACK_DIR}/.profile.d/* ${BUILD_DIR}/.profile.d/
