@@ -35,39 +35,40 @@ fi
 
 mkdir -p ${CACHE_DIR}
 
-echo "Installing the dependencies"
+echo "-----> Installing the dependencies"
 apt_install libunwind8 gettext
 
-mkdir -p ${BUILD_DIR}/dotnet
+mkdir -p ${BUILD_DIR}/dotnet_core
 
-echo "Installing .NET CORE from ${CORE_DOWNLOAD_LOCATION}"
-curl ${CORE_DOWNLOAD_LOCATION} -Ls | tar xz -C ${BUILD_DIR}/dotnet
-ln -s ${BUILD_DIR}/dotnet /app
+echo "-----> Installing .NET CORE from ${CORE_DOWNLOAD_LOCATION}"
+curl ${CORE_DOWNLOAD_LOCATION} -Ls | tar xz -C ${BUILD_DIR}/dotnet_core
 
-export PATH="/app/dotnet:${PATH}"
+echo "-----> Symlinking .NET CORE from ${BUILD_DIR}/dotnet_core to /app"
+ln -s ${BUILD_DIR}/dotnet_core /app
+
+export PATH="/app/dotnet_core:${PATH}"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
 
 
 PROJECT_PATH="$BUILD_DIR/$PROJECT"
-echo ">>> Project path: ${PROJECT_PATH}"
+echo "-----> Project path: ${PROJECT_PATH}"
 
-echo "----- dotnet -----"
+echo "-----> dotnet --info"
 dotnet --info
-echo "------------------"
 
 
-echo "Restoring the packages in project path: ${PROJECT_PATH}"
+echo "-----> Restoring the packages in project path: ${PROJECT_PATH}"
 dotnet restore ${PROJECT_PATH}
 
 # configure some npm command during building
 # export PATH="${PROJECT_DIR}/node_modules/.bin:${PATH}"
 
 BUILD_OUTPUT_PATH="${BUILD_DIR}/${CORE_BUILD_OUTPUT}"
-echo ">>> Publishing the app to: ${BUILD_OUTPUT_PATH}"
+echo "-----> Publishing the app to: ${BUILD_OUTPUT_PATH}"
 # --output ${CORE_BUILD_OUTPUT}
-dotnet publish ${PROJECT_PATH} --output ${BUILD_OUTPUT_PATH} --configuration ${CORE_CONFIGURATION}
+dotnet publish ${PROJECT_PATH} --configuration ${CORE_CONFIGURATION}
 
-echo ">>> Publish Successed"
+echo "-----> Publish Successed"
 
 # mkdir -p ${BUILD_DIR}/.profile.d
 # cp -n ${BUILDPACK_DIR}/.profile.d/* ${BUILD_DIR}/.profile.d/
