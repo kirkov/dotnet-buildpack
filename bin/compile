@@ -26,12 +26,12 @@ else
 	CORE_ENVIRONMENT=""
 fi
 
-SRC_DIR=`mktemp -d`
-# Move the app source code into temporary src dir using subshell to not leak shopt
-(
-	shopt -s dotglob
-	mv ${BUILD_DIR}/* ${SRC_DIR}
-)
+# SRC_DIR=`mktemp -d`
+# # Move the app source code into temporary src dir using subshell to not leak shopt
+# (
+# 	shopt -s dotglob
+# 	mv ${BUILD_DIR}/* ${SRC_DIR}
+# )
 
 mkdir -p ${CACHE_DIR}
 
@@ -48,7 +48,7 @@ export PATH="/app/dotnet:${PATH}"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
 
 
-PROJECT_PATH="$SRC_DIR/$PROJECT"
+PROJECT_PATH="$BUILD_DIR/$PROJECT"
 echo ">>> Project path: ${PROJECT_PATH}"
 
 echo "----- dotnet -----"
@@ -63,8 +63,8 @@ dotnet restore ${PROJECT_PATH}
 # export PATH="${PROJECT_DIR}/node_modules/.bin:${PATH}"
 
 echo "Publishing the app"
-# Publish to heroku_output
-dotnet publish ${PROJECT_PATH} --output ${BUILD_DIR}/heroku_output --configuration ${CORE_CONFIGURATION}
+# --output ${CORE_BUILD_OUTPUT}
+dotnet publish ${PROJECT_PATH} --configuration ${CORE_CONFIGURATION}
 
 echo "Publish Successed"
 
