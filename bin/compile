@@ -47,55 +47,34 @@ ln -s ${BUILD_DIR}/dotnet /app
 export PATH="/app/dotnet:${PATH}"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
 
+
+PROJECT_PATH="$SRC_DIR/$PROJECT"
+echo ">>> Project path: ${PROJECT_PATH}"
+
 echo "----- dotnet -----"
 dotnet --info
 echo "------------------"
 
-DEPLOYMENT_FILE_LOCATION=${SRC_DIR}/.deployment
 
-if [ -n "$PROJECT" ]; then
-	PROJECT_JSON_FILE=${SRC_DIR}/${PROJECT}
-	echo "Project file configured in PROJECT environment variable"
-elif [ -e ${DEPLOYMENT_FILE_LOCATION} ]; then
-	PROJECT_JSON_FILE=${SRC_DIR}/$(awk -F "=" '/project/ {print $2}' ${DEPLOYMENT_FILE_LOCATION} | tr -d ' ')
-	echo "Project file configured in .deployment file"
-else
-	PROJECT_JSON_FILES=$(find ${SRC_DIR}/. -maxdepth 5 -iname "project.json")
-	printf 'Found %s project.json files\n' $(echo "$PROJECT_JSON_FILES" | wc -l | tr -d ' ')
-	PROJECT_JSON_FILE=$(echo "$PROJECT_JSON_FILES" | head -1)
-	PROJECT_JSON_FILE=$(readlink -m $PROJECT_JSON_FILE)
-fi
-echo "Building ${PROJECT_JSON_FILE}"
-
-PROJECT_DIR="$PROJECT_JSON_FILE"
-if [[ -f $PROJECT_JSON_FILE ]]; then
-	PROJECT_DIR=$(dirname $PROJECT_JSON_FILE)
-fi
-
-echo "Reading App Name from project.json"
-PROJECT_DIR_NAME=$(basename $PROJECT_DIR)
-PROJECT_NAME=$(ruby -rjson -e "j = JSON.parse(File.open('${PROJECT_DIR}/project.json','r:bom|utf-8').read); unless j['buildOptions'].nil? ; puts j['buildOptions']['outputName'];end")
-echo "${PROJECT_NAME:=$PROJECT_DIR_NAME}"
-
-echo "Restoring the packages in dir: ${SRC_DIR}"
-dotnet restore ${PROJECT_DIR}
+echo "Restoring the packages in project path: ${PROJECT_PATH}"
+dotnet restore ${PROJECT_PATH}
 
 # configure some npm command during building
-export PATH="${PROJECT_DIR}/node_modules/.bin:${PATH}"
+# export PATH="${PROJECT_DIR}/node_modules/.bin:${PATH}"
 
 echo "Publishing the app"
 # Publish to heroku_output
-dotnet publish ${PROJECT_JSON_FILE} --output ${BUILD_DIR}/heroku_output --configuration ${CORE_CONFIGURATION}
+dotnet publish ${PROJECT_PATH} --output ${BUILD_DIR}/heroku_output --configuration ${CORE_CONFIGURATION}
 
 echo "Publish Successed"
 
-mkdir -p ${BUILD_DIR}/.profile.d
-cp -n ${BUILDPACK_DIR}/.profile.d/* ${BUILD_DIR}/.profile.d/
+# mkdir -p ${BUILD_DIR}/.profile.d
+# cp -n ${BUILDPACK_DIR}/.profile.d/* ${BUILD_DIR}/.profile.d/
 
-if [ -e ${SRC_DIR}/Procfile ]; then
-	cp ${SRC_DIR}/Procfile ${BUILD_DIR}
-else
-	cat << EOT >> ${BUILD_DIR}/Procfile
-web: cd \$HOME/heroku_output && dotnet ./${PROJECT_NAME}.dll --server.urls http://+:\$PORT ${CORE_ENVIRONMENT}
-EOT
-fi
+# if [ -e ${SRC_DIR}/Procfile ]; then
+# 	cp ${SRC_DIR}/Procfile ${BUILD_DIR}
+# else
+# 	cat << EOT >> ${BUILD_DIR}/Procfile
+# web: cd \$HOME/heroku_output && dotnet ./${PROJECT_NAME}.dll --server.urls http://+:\$PORT ${CORE_ENVIRONMENT}
+# EOT
+# fi
