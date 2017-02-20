@@ -44,7 +44,7 @@ echo "-----> Installing .NET CORE from ${CORE_DOWNLOAD_LOCATION}"
 curl ${CORE_DOWNLOAD_LOCATION} -Ls | tar xz -C ${BUILD_DIR}/dotnet_core
 
 echo "-----> Symlinking .NET CORE from ${BUILD_DIR}/dotnet_core to /app"
-ln -s ${BUILD_DIR}/dotnet_core /app
+ln -s ${BUILD_DIR}/dotnet_core/dotnet /app/dotnet
 
 export PATH="/app/dotnet_core:${PATH}"
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}"
