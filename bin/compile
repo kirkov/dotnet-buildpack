@@ -36,7 +36,7 @@ fi
 mkdir -p ${CACHE_DIR}
 
 echo "-----> Installing the dependencies"
-apt_install libunwind8 gettext
+apt_install libunwind8 libicu52 gettext libkrb5-3 libicu52 liblttng-ust0 libssl1.0.0 zlib1g libuuid1
 
 mkdir -p ${BUILD_DIR}/dotnet_core
 
